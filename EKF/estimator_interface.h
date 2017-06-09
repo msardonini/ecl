@@ -179,7 +179,13 @@ public:
 	parameters *getParamHandle() {return &_params;}
 
 	// set vehicle landed status data
-	void set_in_air_status(bool in_air) {_control_status.flags.in_air = in_air;}
+	void set_in_air_status(bool in_air) {
+		// store the latest yaw angle if landing
+		if (!in_air && _control_status.flags.in_air) {
+			_last_inflight_yaw = getOutputYawAngle();
+		}
+		_control_status.flags.in_air = in_air;
+	}
 
 	// set vehicle is fixed wing status
 	void set_is_fixed_wing(bool is_fixed_wing) {_control_status.flags.fixed_wing = is_fixed_wing;}
@@ -296,6 +302,9 @@ public:
 	// return a bitmask integer that describes which state estimates can be used for flight control
 	virtual void get_ekf_soln_status(uint16_t *status) = 0;
 
+	// return Euler yaw angle  in radians at output time horizon using the best conditioned of a 321 or 312 sequence to avoid gimbal lock
+	float getOutputYawAngle(void);
+
 protected:
 
 	parameters _params;		// filter parameters
@@ -348,6 +357,7 @@ protected:
 	imuSample _imu_sample_new{};		// imu sample capturing the newest imu data
 	Matrix3f _R_to_earth_now;		// rotation matrix from body to earth frame at current time
 	Vector3f _vel_imu_rel_body_ned;		// velocity of IMU relative to body origin in NED earth frame
+	float _last_inflight_yaw{0.0f};		// value of output yaw angle saved at touchdown (rad)
 
 	uint64_t _imu_ticks{0};	// counter for imu updates
 
