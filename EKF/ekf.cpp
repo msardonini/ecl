@@ -195,6 +195,11 @@ bool Ekf::initialiseFilter()
 		} else if ((_ev_counter != 0) && (_ev_sample_delayed.time_us != 0)) {
 			// increment the sample count
 			_ev_counter ++;
+			// rotate EV measurements into the EKF Navigation frame
+			if (_ev_not_ned) {
+				calcExtVisRotMat();
+				_ev_sample_delayed.posNED = _ev_rot_mat * _ev_sample_delayed.posNED;
+			}
 		}
 	}
 

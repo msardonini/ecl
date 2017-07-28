@@ -1358,3 +1358,49 @@ void Ekf::setControlEVHeight()
 	_control_status.flags.gps_hgt = false;
 	_control_status.flags.rng_hgt = false;
 }
+
+// update the estimated misalignment between the EV navigation frame and the EKF navigation frame
+// and calculate a rotation matrix which rotates EV measurements into the EKF's navigatin frame
+void Ekf::calcExtVisRotMat()
+{
+	// calculate the quaternion delta between the EKF and EV reference frames at the EKF fusion time horizon
+	Quatf quat_inv = _ev_sample_delayed.quat.inversed();
+	Quatf q_error =  _state.quat_nominal * quat_inv;
+	q_error.normalize();
+
+	// convert to a delta angle and apply a spike and low pass filter
+	Vector3f rot_vec;
+	float delta;
+	if (q_error(0) >= 0.0f) {
+	    delta = 2 * acosf(q_error(0));
+	    rot_vec(0) = q_error(1) / sinf(delta/2);
+	    rot_vec(1) = q_error(2) / sinf(delta/2);
+	    rot_vec(2) = q_error(3) / sinf(delta/2);
+	} else {
+	    delta = 2 * acosf(-q_error(1));
+	    rot_vec(0) = -q_error(2) / sinf(delta/2);
+	    rot_vec(1) = -q_error(3) / sinf(delta/2);
+	    rot_vec(2) = -q_error(4) / sinf(delta/2);
+	}
+
+	float rot_vec_norm = rot_vec.norm();
+	if (rot_vec_norm > 1e-9f) {
+		rot_vec = rot_vec * delta / rot_vec_norm;
+
+		// apply an input limiter to protect from spikes
+		Vector3f _input_delta_vec = rot_vec - _ev_rot_vec_filt;
+		float input_delta_mag = _input_delta_vec.norm();
+		if (input_delta_mag > 0.1f) {
+			rot_vec = _ev_rot_vec_filt + rot_vec * (0.1f / input_delta_mag);
+		}
+
+		// Apply a first order IIR low pass filter
+		_ev_rot_vec_filt = _ev_rot_vec_filt * 0.95f + rot_vec * 0.05f;
+
+	}
+
+	// convert filtered vector to a quaternion and then to a rotation matrix
+	q_error.from_axis_angle(_ev_rot_vec_filt);
+	_ev_rot_mat = quat_to_invrotmat(q_error);
+
+}

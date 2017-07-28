@@ -141,6 +141,12 @@ void Ekf::controlExternalVisionFusion()
 	// Check for new exernal vision data
 	if (_ev_data_ready) {
 
+		if (_ev_not_ned) {
+			// rotate EV measurements into the EKF Navigation frame
+			calcExtVisRotMat();
+			_ev_sample_delayed.posNED = _ev_rot_mat * _ev_sample_delayed.posNED;
+		}
+
 		// external vision position aiding selection logic
 		if ((_params.fusion_mode & MASK_USE_EVPOS) && !_control_status.flags.ev_pos && _control_status.flags.tilt_align && _control_status.flags.yaw_align) {
 			// check for a exernal vision measurement that has fallen behind the fusion time horizon

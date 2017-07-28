@@ -243,6 +243,9 @@ private:
 	Vector2f _hpos_meas_prev;		///< previous value of NE position measurement fused using odometry assumption (m)
 	Vector2f _hpos_pred_prev;		///< previous value of NE position state used by odometry fusion (m)
 	bool _hpos_prev_available{false};	///< true when previous values of the estimate and measurement are available for use
+	Vector3f _ev_rot_vec_filt;		///< filtered rotation vector defining the rotation from EKF to EV reference (rad)
+	bool _ev_not_ned{false};		///< true if the external vision system does not provide observations in a NED frame of reference
+	Dcmf _ev_rot_mat;			///< transformation matrix thar rotates observations from the EV to the EKF navigation frame
 
 	// booleans true when fresh sensor data is available at the fusion time horizon
 	bool _gps_data_ready{false};	///< true when new GPS data has fallen behind the fusion time horizon and is available to be fused
@@ -458,6 +461,10 @@ private:
 
 	// modify output filter to match the the EKF state at the fusion time horizon
 	void alignOutputFilter();
+
+	// update the estimated misalignment between the EV naigration frame and the EKF navigation frame
+	// and calculate a rotation matrix which transforms EV navigation frame measurements into NED
+	void calcExtVisRotMat();
 
 	// limit the diagonal of the covariance matrix
 	void fixCovarianceErrors();
