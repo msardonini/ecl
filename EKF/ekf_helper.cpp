@@ -1444,3 +1444,14 @@ void Ekf::resetExtVisRotMat()
 	// reset the rotation matrix
 	_ev_rot_mat = quat_to_invrotmat(q_error);
 }
+
+// get the diagonal elements of the covariance matrix
+void Ekf::get_ekf2ev_quaternion(float *quat)
+{
+	Quatf quat_ekf2ev;
+	quat_ekf2ev.from_axis_angle(_ev_rot_vec_filt);
+	for (unsigned i = 0; i < 4; i++) {
+		quat[i] = quat_ekf2ev(i);
+	}
+}
+

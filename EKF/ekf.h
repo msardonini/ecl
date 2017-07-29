@@ -206,6 +206,9 @@ public:
 	// return a bitmask integer that describes which state estimates can be used for flight control
 	void get_ekf_soln_status(uint16_t *status);
 
+	// return the quaternion defining the rotation from the EKF to the External Vision reference frame
+	void get_ekf2ev_quaternion(float *quat);
+
 private:
 
 	static constexpr uint8_t _k_num_states{24};		///< number of EKF states
