@@ -143,7 +143,7 @@ void Ekf::controlExternalVisionFusion()
 
 		// if the ev data is not in a NED reference frame, then the transformation between EV and EKF navigation frames
 		// needs to be calculated and the observations rotated into the EKF frame of reference
-		if (_params.fusion_mode & MASK_ROTATE_EV) {
+		if ((_params.fusion_mode & MASK_ROTATE_EV) && (_params.fusion_mode & MASK_USE_EVPOS) && !(_params.fusion_mode & MASK_USE_EVYAW)) {
 			// rotate EV measurements into the EKF Navigation frame
 			calcExtVisRotMat();
 			_ev_sample_delayed.posNED = _ev_rot_mat * _ev_sample_delayed.posNED;

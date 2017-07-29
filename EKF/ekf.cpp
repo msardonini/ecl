@@ -195,11 +195,6 @@ bool Ekf::initialiseFilter()
 		} else if ((_ev_counter != 0) && (_ev_sample_delayed.time_us != 0)) {
 			// increment the sample count
 			_ev_counter ++;
-			// rotate EV measurements into the EKF Navigation frame
-			if (_params.fusion_mode & MASK_ROTATE_EV) {
-				calcExtVisRotMat();
-				_ev_sample_delayed.posNED = _ev_rot_mat * _ev_sample_delayed.posNED;
-			}
 		}
 	}
 
@@ -292,6 +287,12 @@ bool Ekf::initialiseFilter()
 
 		// calculate the initial magnetic field and yaw alignment
 		_control_status.flags.yaw_align = resetMagHeading(mag_init);
+
+		// initialise the rotation from EV to EKF navigation frame if required
+		if ((_params.fusion_mode & MASK_ROTATE_EV) && (_params.fusion_mode & MASK_USE_EVPOS) && !(_params.fusion_mode & MASK_USE_EVYAW)) {
+			resetExtVisRotMat();
+			_ev_sample_delayed.posNED = _ev_rot_mat * _ev_sample_delayed.posNED;
+		}
 
 		if (_control_status.flags.rng_hgt) {
 			// if we are using the range finder as the primary source, then calculate the baro height at origin so  we can use baro as a backup
