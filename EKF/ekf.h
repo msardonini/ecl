@@ -461,9 +461,14 @@ private:
 	// modify output filter to match the the EKF state at the fusion time horizon
 	void alignOutputFilter();
 
-	// update the estimated misalignment between the EV naigration frame and the EKF navigation frame
-	// and calculate a rotation matrix which transforms EV navigation frame measurements into NED
+	// update the estimated angular misalignment vector between the EV naigration frame and the EKF navigation frame
+	// and update the rotation matrix which transforms EV navigation frame measurements into NED
 	void calcExtVisRotMat();
+
+
+	// reset the estimated angular misalignment vector between the EV naigration frame and the EKF navigation frame
+	// and reset the rotation matrix which transforms EV navigation frame measurements into NED
+	void resetExtVisRotMat();
 
 	// limit the diagonal of the covariance matrix
 	void fixCovarianceErrors();

@@ -1404,3 +1404,38 @@ void Ekf::calcExtVisRotMat()
 	_ev_rot_mat = quat_to_invrotmat(q_error);
 
 }
+
+// reset the estimated misalignment between the EV navigation frame and the EKF navigation frame
+// and update the rotation matrix which rotates EV measurements into the EKF's navigation frame
+void Ekf::resetExtVisRotMat()
+{
+	// calculate the quaternion delta between the EKF and EV reference frames at the EKF fusion time horizon
+	Quatf quat_inv = _ev_sample_delayed.quat.inversed();
+	Quatf q_error =  _state.quat_nominal * quat_inv;
+	q_error.normalize();
+
+	// convert to a delta angle and reset
+	Vector3f rot_vec;
+	float delta;
+	if (q_error(0) >= 0.0f) {
+	    delta = 2 * acosf(q_error(0));
+	    rot_vec(0) = q_error(1) / sinf(delta/2);
+	    rot_vec(1) = q_error(2) / sinf(delta/2);
+	    rot_vec(2) = q_error(3) / sinf(delta/2);
+	} else {
+	    delta = 2 * acosf(-q_error(1));
+	    rot_vec(0) = -q_error(2) / sinf(delta/2);
+	    rot_vec(1) = -q_error(3) / sinf(delta/2);
+	    rot_vec(2) = -q_error(4) / sinf(delta/2);
+	}
+
+	float rot_vec_norm = rot_vec.norm();
+	if (rot_vec_norm > 1e-9f) {
+		_ev_rot_vec_filt = rot_vec * delta / rot_vec_norm;
+	} else {
+		_ev_rot_vec_filt.zero();
+	}
+
+	// reset the rotation matrix
+	_ev_rot_mat = quat_to_invrotmat(q_error);
+}
