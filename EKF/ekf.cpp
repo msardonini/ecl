@@ -196,7 +196,7 @@ bool Ekf::initialiseFilter()
 			// increment the sample count
 			_ev_counter ++;
 			// rotate EV measurements into the EKF Navigation frame
-			if (_ev_not_ned) {
+			if (_params.fusion_mode & MASK_ROTATE_EV) {
 				calcExtVisRotMat();
 				_ev_sample_delayed.posNED = _ev_rot_mat * _ev_sample_delayed.posNED;
 			}
