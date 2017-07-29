@@ -243,7 +243,7 @@ private:
 
 	// variables used when position data is being fused using a relative position odometry model
 	bool _hpos_odometry{false};		///< true when the NE position data is being fused using an odometry assumption
-	Vector2f _hpos_meas_prev;		///< previous value of NE position measurement fused using odometry assumption (m)
+	Vector3f _pos_meas_prev;		///< previous value of NED position measurement fused using odometry assumption (m)
 	Vector2f _hpos_pred_prev;		///< previous value of NE position state used by odometry fusion (m)
 	bool _hpos_prev_available{false};	///< true when previous values of the estimate and measurement are available for use
 	Vector3f _ev_rot_vec_filt;		///< filtered rotation vector defining the rotation from EKF to EV reference (rad)

@@ -291,7 +291,6 @@ bool Ekf::initialiseFilter()
 		// initialise the rotation from EV to EKF navigation frame if required
 		if ((_params.fusion_mode & MASK_ROTATE_EV) && (_params.fusion_mode & MASK_USE_EVPOS) && !(_params.fusion_mode & MASK_USE_EVYAW)) {
 			resetExtVisRotMat();
-			_ev_sample_delayed.posNED = _ev_rot_mat * _ev_sample_delayed.posNED;
 		}
 
 		if (_control_status.flags.rng_hgt) {

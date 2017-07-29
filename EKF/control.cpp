@@ -146,8 +146,6 @@ void Ekf::controlExternalVisionFusion()
 		if ((_params.fusion_mode & MASK_ROTATE_EV) && (_params.fusion_mode & MASK_USE_EVPOS) && !(_params.fusion_mode & MASK_USE_EVYAW)) {
 			// rotate EV measurements into the EKF Navigation frame
 			calcExtVisRotMat();
-			_ev_sample_delayed.posNED = _ev_rot_mat * _ev_sample_delayed.posNED;
-
 		}
 
 		// external vision position aiding selection logic
@@ -166,7 +164,12 @@ void Ekf::controlExternalVisionFusion()
 				} else {
 					resetPosition();
 					resetVelocity();
-					_hpos_odometry = false;
+					// we cannot use an absolue position from a rotating reference frame
+					if (_params.fusion_mode & MASK_ROTATE_EV) {
+						_hpos_odometry = true;
+					} else {
+						_hpos_odometry = false;
+					}
 
 				}
 			}

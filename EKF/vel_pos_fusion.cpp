@@ -107,15 +107,22 @@ void Ekf::fuseVelPosHeight()
 					_hpos_prev_available = true;
 
 				} else {
+					// calculate the change in position since the last measurement
+					Vector3f ev_delta_pos = _ev_sample_delayed.posNED - _pos_meas_prev;
+
+					// rotate measurement into body frame if required
+					if (_params.fusion_mode & MASK_ROTATE_EV) {
+						ev_delta_pos = _ev_rot_mat * ev_delta_pos;
+					}
+
 					// use the change in position since the last measurement
-					_vel_pos_innov[3] = _state.pos(0) - _hpos_pred_prev(0) - _ev_sample_delayed.posNED(0) + _hpos_meas_prev(0);
-					_vel_pos_innov[4] = _state.pos(1) - _hpos_pred_prev(1) - _ev_sample_delayed.posNED(1) + _hpos_meas_prev(1);
+					_vel_pos_innov[3] = _state.pos(0) - _hpos_pred_prev(0) - ev_delta_pos(0);
+					_vel_pos_innov[4] = _state.pos(1) - _hpos_pred_prev(1) - ev_delta_pos(1);
 
 				}
 
 				// record observation and estimate for use next time
-				_hpos_meas_prev(0) = _ev_sample_delayed.posNED(0);
-				_hpos_meas_prev(1) = _ev_sample_delayed.posNED(1);
+				_pos_meas_prev = _ev_sample_delayed.posNED;
 				_hpos_pred_prev(0) = _state.pos(0);
 				_hpos_pred_prev(1) = _state.pos(1);
 
