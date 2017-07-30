@@ -248,6 +248,7 @@ private:
 	bool _hpos_prev_available{false};	///< true when previous values of the estimate and measurement are available for use
 	Vector3f _ev_rot_vec_filt;		///< filtered rotation vector defining the rotation from EKF to EV reference (rad)
 	Dcmf _ev_rot_mat;			///< transformation matrix that rotates observations from the EV to the EKF navigation frame
+	uint64_t _ev_rot_last_time_us{0};	///< previous time that the calculation of the ekf to ev rotation matrix was updated (uSec)
 
 	// booleans true when fresh sensor data is available at the fusion time horizon
 	bool _gps_data_ready{false};	///< true when new GPS data has fallen behind the fusion time horizon and is available to be fused

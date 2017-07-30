@@ -1400,7 +1400,10 @@ void Ekf::calcExtVisRotMat()
 		}
 
 		// Apply a first order IIR low pass filter
-		_ev_rot_vec_filt = _ev_rot_vec_filt * 0.95f + rot_vec * 0.05f;
+		const float omega_lpf_us = 0.2e-6f; // cutoff frequency in rad/uSec
+		float alpha = math::constrain(omega_lpf_us * (float)(_time_last_imu - _ev_rot_last_time_us) , 0.0f , 1.0f);
+		_ev_rot_last_time_us = _time_last_imu;
+		_ev_rot_vec_filt = _ev_rot_vec_filt * (1.0f - alpha) + rot_vec * alpha;
 
 	}
 
