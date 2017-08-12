@@ -39,7 +39,7 @@
  *
  */
 
-#include <matrix/matrix/math.hpp>
+#include "../matrix/matrix/math.hpp"
 #include "RingBuffer.h"
 #include "geo.h"
 #include "common.h"
