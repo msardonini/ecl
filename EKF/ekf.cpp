@@ -115,12 +115,12 @@ bool Ekf::update()
 {
 	if (!_filter_initialised) {
 		_filter_initialised = initialiseFilter();
-
 		if (!_filter_initialised) {
+			printf("filter not initialized\n");
 			return false;
 		}
 	}
-
+	
 	// Only run the filter if IMU data in the buffer has been updated
 	if (_imu_updated) {
 
@@ -141,9 +141,10 @@ bool Ekf::update()
 
 	// check for NaN or inf on attitude states
 	if (!ISFINITE(_state.quat_nominal(0)) || !ISFINITE(_output_new.quat_nominal(0))) {
+		printf("Nan or inf attitude states\n");
 		return false;
 	}
-
+	printf("1\n");
 	// We don't have valid data to output until tilt and yaw alignment is complete
 	return _control_status.flags.tilt_align && _control_status.flags.yaw_align;
 }
@@ -202,7 +203,8 @@ bool Ekf::initialiseFilter()
 	if (_hgt_counter == 0) {
 		_primary_hgt_source = _params.vdist_sensor_type;
 	}
-
+	_primary_hgt_source = VDIST_SENSOR_BARO;
+	
 	// accumulate enough height measurements to be confident in the qulaity of the data
 	if (_primary_hgt_source == VDIST_SENSOR_BARO || _primary_hgt_source == VDIST_SENSOR_GPS ||
 		  _primary_hgt_source == VDIST_SENSOR_RANGE) {
@@ -236,6 +238,7 @@ bool Ekf::initialiseFilter()
 		_hgt_counter = _ev_counter;
 
 	} else {
+		printf("1\n");
 		return false;
 	}
 
@@ -245,6 +248,7 @@ bool Ekf::initialiseFilter()
 	bool ev_count_fail = ((_params.fusion_mode & MASK_USE_EVPOS) || (_params.fusion_mode & MASK_USE_EVYAW)) && (_ev_counter <= 2 * _obs_buffer_length);
 
 	if (hgt_count_fail || mag_count_fail || ev_count_fail) {
+		printf(" height fail %d, mag fail %d, ev fail %d\n", _hgt_counter, _mag_counter, ev_count_fail);
 		return false;
 
 	} else {
@@ -271,6 +275,7 @@ bool Ekf::initialiseFilter()
 			roll = atan2f(-_delVel_sum(1), -_delVel_sum(2));
 
 		} else {
+			printf("3\n");
 			return false;
 		}
 

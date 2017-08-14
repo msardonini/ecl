@@ -44,6 +44,8 @@
  */
 #ifndef GEO_H
 #define GEO_H
+
+//#define POSIX_SHARED
 #ifdef POSIX_SHARED
 #include <stdbool.h>
 #include "mathlib.h"

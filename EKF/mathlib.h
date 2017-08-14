@@ -40,6 +40,8 @@
  */
 #ifndef MATHLIB_H
 #define MATHLIB_H
+
+//#define POSIX_SHARED
 #ifdef POSIX_SHARED
 // #include <Eigen/Dense>
 // #include <algorithm>
