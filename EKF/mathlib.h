@@ -38,6 +38,8 @@
  *
  * @author Siddharth Bharat Purohit <siddharthbharatpurohit@gmail.com>
  */
+#define POSIX_SHARED
+
 #ifndef MATHLIB_H
 #define MATHLIB_H
 
