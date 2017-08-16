@@ -141,6 +141,7 @@ void EstimatorInterface::setIMUData(uint64_t time_usec, uint64_t delta_ang_dt, u
 		_min_obs_interval_us = (_imu_sample_new.time_us - _imu_sample_delayed.time_us) / (_obs_buffer_length - 1);
 
 	} else {
+		//printf("IMU Failed to update\n");
 		_imu_updated = false;
 
 	}
@@ -204,6 +205,9 @@ void EstimatorInterface::setGpsData(uint64_t time_usec, struct gps_message *gps)
 
 		_gps_buffer.push(gps_sample_new);
 	}
+	else{
+		printf("setGPS failed, arg1 %d, arg2 %d\n", _params.fusion_mode & MASK_USE_GPS, (_params.vdist_sensor_type == VDIST_SENSOR_GPS));
+	}
 }
 
 void EstimatorInterface::setBaroData(uint64_t time_usec, float data)
@@ -212,6 +216,7 @@ void EstimatorInterface::setBaroData(uint64_t time_usec, float data)
 		return;
 	}
 
+	printf("min obs %d", _min_obs_interval_us);
 	// limit data rate to prevent data being lost
 	if (time_usec - _time_last_baro > _min_obs_interval_us) {
 

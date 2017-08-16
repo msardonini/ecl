@@ -144,7 +144,6 @@ bool Ekf::update()
 		printf("Nan or inf attitude states\n");
 		return false;
 	}
-	printf("1\n");
 	// We don't have valid data to output until tilt and yaw alignment is complete
 	return _control_status.flags.tilt_align && _control_status.flags.yaw_align;
 }
@@ -238,7 +237,6 @@ bool Ekf::initialiseFilter()
 		_hgt_counter = _ev_counter;
 
 	} else {
-		printf("1\n");
 		return false;
 	}
 
@@ -275,7 +273,6 @@ bool Ekf::initialiseFilter()
 			roll = atan2f(-_delVel_sum(1), -_delVel_sum(2));
 
 		} else {
-			printf("3\n");
 			return false;
 		}
 
