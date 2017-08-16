@@ -116,7 +116,7 @@ bool Ekf::update()
 	if (!_filter_initialised) {
 		_filter_initialised = initialiseFilter();
 		if (!_filter_initialised) {
-			printf("filter not initialized\n");
+			//printf("filter not initialized\n");
 			return false;
 		}
 	}
@@ -246,7 +246,7 @@ bool Ekf::initialiseFilter()
 	bool ev_count_fail = ((_params.fusion_mode & MASK_USE_EVPOS) || (_params.fusion_mode & MASK_USE_EVYAW)) && (_ev_counter <= 2 * _obs_buffer_length);
 
 	if (hgt_count_fail || mag_count_fail || ev_count_fail) {
-		printf(" height fail %d, mag fail %d, ev fail %d\n", _hgt_counter, _mag_counter, ev_count_fail);
+		//printf(" height fail %d, mag fail %d, ev fail %d\n", _hgt_counter, _mag_counter, ev_count_fail);
 		return false;
 
 	} else {
