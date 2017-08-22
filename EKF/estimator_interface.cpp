@@ -216,7 +216,7 @@ void EstimatorInterface::setBaroData(uint64_t time_usec, float data)
 		return;
 	}
 
-	printf("min obs %d", _min_obs_interval_us);
+	//printf("min obs %d", _min_obs_interval_us);
 	// limit data rate to prevent data being lost
 	if (time_usec - _time_last_baro > _min_obs_interval_us) {
 
