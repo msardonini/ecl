@@ -37,6 +37,7 @@ project(ECL CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+set(ECL_DIR libraries/ecl/EKF/)
 
 # Find Eigen
 message("looking for FindEigen3.cmake in ${CMAKE_MODULE_PATH}")
@@ -45,7 +46,7 @@ if(NOT EIGEN3_INCLUDE_DIR)
 	message(FATAL_ERROR "Eigen3 not found.")
 endif()
 
-set(MATRIX_DIR ${CMAKE_SOURCE_DIR}/../matrix)
+set(MATRIX_DIR ${CMAKE_SOURCE_DIR}/libraries/ecl/matrix)
 if(NOT EXISTS "${MATRIX_DIR}/.git")
 	message(SEND_ERROR "The git submodules are not available. Please run git submodule update --init --recursive")
 endif()
@@ -56,39 +57,30 @@ include_directories(
 	${EIGEN3_INCLUDE_DIR}
 	)
 
-set(SRCS
-	airspeed_fusion.cpp
-	control.cpp
-	covariance.cpp
-	ekf.cpp
-	ekf_helper.cpp
-	estimator_interface.cpp
-	geo.cpp
-	gps_checks.cpp
-	mag_fusion.cpp
-	mathlib.cpp
-	optflow_fusion.cpp
-	sideslip_fusion.cpp
-	terrain_estimator.cpp
-	vel_pos_fusion.cpp
-	drag_fusion.cpp
+set(SRCS_ECL
+	${ECL_DIR}airspeed_fusion.cpp
+	${ECL_DIR}control.cpp
+	${ECL_DIR}covariance.cpp
+	${ECL_DIR}ekf.cpp
+	${ECL_DIR}ekf_helper.cpp
+	${ECL_DIR}estimator_interface.cpp
+	${ECL_DIR}geo.cpp
+	${ECL_DIR}gps_checks.cpp
+	${ECL_DIR}mag_fusion.cpp
+	${ECL_DIR}mathlib.cpp
+	${ECL_DIR}optflow_fusion.cpp
+	${ECL_DIR}sideslip_fusion.cpp
+	${ECL_DIR}terrain_estimator.cpp
+	${ECL_DIR}vel_pos_fusion.cpp
+	${ECL_DIR}drag_fusion.cpp
 	)
 
 add_definitions(-DPOSIX_SHARED)
-add_compile_options(
-	-pedantic
-	-std=c++11
-	-Wall
-	-Werror
-	-Wno-deprecated-declarations
-	-Wno-enum-compare
-	-Wno-unused-local-typedefs
-	-Wno-unused-parameter
-	)
+
 
 # clang tolerate unknown gcc options
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 	add_compile_options(-Wno-unknown-warning-option)
 endif()
 
-add_library(ecl SHARED ${SRCS})
+add_library(ecl SHARED ${SRCS_ECL})
