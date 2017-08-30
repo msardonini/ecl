@@ -31,34 +31,56 @@
 #
 ############################################################################
 
-px4_add_module(
-	MODULE lib__ecl
-	STACK_MAIN 6000
-	STACK_MAX 6000
-	COMPILE_FLAGS
-	SRCS
-		attitude_fw/ecl_controller.cpp
-		attitude_fw/ecl_pitch_controller.cpp
-		attitude_fw/ecl_roll_controller.cpp
-		attitude_fw/ecl_wheel_controller.cpp
-		attitude_fw/ecl_yaw_controller.cpp
-		EKF/airspeed_fusion.cpp
-		EKF/control.cpp
-		EKF/covariance.cpp
-		EKF/ekf.cpp
-		EKF/ekf_helper.cpp
-		EKF/estimator_interface.cpp
-		EKF/gps_checks.cpp
-		EKF/mag_fusion.cpp
-		EKF/optflow_fusion.cpp
-		EKF/sideslip_fusion.cpp
-		EKF/terrain_estimator.cpp
-		EKF/vel_pos_fusion.cpp
-		EKF/drag_fusion.cpp
-		l1/ecl_l1_pos_controller.cpp
-		validation/data_validator.cpp
-		validation/data_validator_group.cpp
-	DEPENDS
-		platforms__common
+cmake_minimum_required(VERSION 2.8)
+
+project(ECL CXX)
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+set(ECL_DIR libraries/ecl/EKF/)
+
+# Find Eigen
+message("looking for FindEigen3.cmake in ${CMAKE_MODULE_PATH}")
+find_package(Eigen3 REQUIRED)
+if(NOT EIGEN3_INCLUDE_DIR)
+	message(FATAL_ERROR "Eigen3 not found.")
+endif()
+
+set(MATRIX_DIR ${CMAKE_SOURCE_DIR}/libraries/ecl/matrix)
+if(NOT EXISTS "${MATRIX_DIR}/.git")
+	message(SEND_ERROR "The git submodules are not available. Please run git submodule update --init --recursive")
+endif()
+
+include_directories(
+	..
+	${MATRIX_DIR}
+	${EIGEN3_INCLUDE_DIR}
 	)
-# vim: set noet ft=cmake fenc=utf-8 ff=unix :
+
+set(SRCS_ECL
+	${ECL_DIR}airspeed_fusion.cpp
+	${ECL_DIR}control.cpp
+	${ECL_DIR}covariance.cpp
+	${ECL_DIR}ekf.cpp
+	${ECL_DIR}ekf_helper.cpp
+	${ECL_DIR}estimator_interface.cpp
+	${ECL_DIR}geo.cpp
+	${ECL_DIR}gps_checks.cpp
+	${ECL_DIR}mag_fusion.cpp
+	${ECL_DIR}mathlib.cpp
+	${ECL_DIR}optflow_fusion.cpp
+	${ECL_DIR}sideslip_fusion.cpp
+	${ECL_DIR}terrain_estimator.cpp
+	${ECL_DIR}vel_pos_fusion.cpp
+	${ECL_DIR}drag_fusion.cpp
+	)
+
+add_definitions(-DPOSIX_SHARED)
+
+
+# clang tolerate unknown gcc options
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+	add_compile_options(-Wno-unknown-warning-option)
+endif()
+
+add_library(ecl SHARED ${SRCS_ECL})
