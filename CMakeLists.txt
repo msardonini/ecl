@@ -37,10 +37,11 @@ project(ECL CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}/root/Robotics_Cape/cmake)
 set(ECL_DIR libraries/ecl/EKF/)
 
 # Find Eigen
-message("looking for FindEigen3.cmake in ${CMAKE_MODULE_PATH}")
+#message("looking for FindEigen3.cmake in ${CMAKE_MODULE_PATH}")
 find_package(Eigen3 REQUIRED)
 if(NOT EIGEN3_INCLUDE_DIR)
 	message(FATAL_ERROR "Eigen3 not found.")

@@ -491,6 +491,8 @@ void Ekf::controlGpsFusion()
 			_last_known_posNE(1) = _state.pos(1);
 			_state.vel.setZero();
 			ECL_WARN("EKF measurement timeout - stopping navigation");
+			printf( "  time imu %lld ", _time_last_imu );
+			printf( " gps time %lld ", _time_last_gps);
 
 		}
 	}
