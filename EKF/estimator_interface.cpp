@@ -230,6 +230,7 @@ void EstimatorInterface::setBaroData(uint64_t time_usec, float data)
 		baro_sample_new.time_us = math::max(baro_sample_new.time_us, _imu_sample_delayed.time_us);
 
 		_baro_buffer.push(baro_sample_new);
+//		printf("Pushed baro data %f\n",data);
 	}
 }
 

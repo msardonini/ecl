@@ -154,7 +154,7 @@ void Ekf::fuseVelPosHeight()
 		gate_size[4] = gate_size[3];
 
 	}
-
+	//printf("fuse hgt %d bar flag %d\n",_fuse_height, _control_status.flags.baro_hgt);
 	if (_fuse_height) {
 		if (_control_status.flags.baro_hgt) {
 			fuse_map[5] = true;
@@ -223,6 +223,8 @@ void Ekf::fuseVelPosHeight()
 	bool pos_check_pass = ((_vel_pos_test_ratio[3] <= 1.0f) && (_vel_pos_test_ratio[4] <= 1.0f)) || !_control_status.flags.tilt_align;
 	innov_check_pass_map[4] = innov_check_pass_map[3] = pos_check_pass;
 	innov_check_pass_map[5] = (_vel_pos_test_ratio[5] <= 1.0f) || !_control_status.flags.tilt_align;
+
+	//printf("pos ratio %f\n",_vel_pos_test_ratio[5]);
 
 	// record the successful velocity fusion event
 	if (vel_check_pass && _fuse_hor_vel) {

@@ -537,6 +537,10 @@ void Ekf::controlHeightSensorTimeouts()
 	// check if height has been inertial deadreckoning for too long
 	bool hgt_fusion_timeout = ((_time_last_imu - _time_last_hgt_fuse) > 5e6);
 
+
+	//printf("P9, %f fusion_tmt %d cont_bad_acc %d, last time hfuse %llu\n", P[9][9],hgt_fusion_timeout, continuous_bad_accel_hgt, (_time_last_imu - _time_last_hgt_fuse)  );
+
+
 	// reset the vertical position and velocity states
 	if ((P[9][9] > sq(_params.hgt_reset_lim)) && (hgt_fusion_timeout || continuous_bad_accel_hgt)) {
 		// boolean that indicates we will do a height reset
