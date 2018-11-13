@@ -38,7 +38,7 @@ project(ECL CXX)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-set(ECL_DIR lib/ecl/EKF/)
+set(ECL_DIR EKF/)
 
 # Find Eigen
 #message("looking for FindEigen3.cmake in ${CMAKE_MODULE_PATH}")
@@ -86,3 +86,14 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 endif()
 
 add_library(ecl SHARED ${SRCS_ECL})
+
+
+target_include_directories(ecl PUBLIC 	${ECL_DIR}
+	${MATRIX_DIR}
+	${EIGEN3_INCLUDE_DIR})
+
+
+    set_target_properties(ecl
+        PROPERTIES
+            INTERFACE_COMPILE_DEFINITIONS POSIX_SHARED
+    )
