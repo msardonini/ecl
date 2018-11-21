@@ -100,3 +100,7 @@ target_include_directories(ecl PUBLIC 	${ECL_DIR}
         PROPERTIES
             INTERFACE_COMPILE_DEFINITIONS POSIX_SHARED
     )
+
+install(TARGETS ecl
+	DESTINATION /usr/lib/
+	)
