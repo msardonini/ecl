@@ -88,7 +88,7 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 	add_compile_options(-Wno-unknown-warning-option)
 endif()
 
-add_library(ecl SHARED ${SRCS_ECL})
+add_library(ecl STATIC ${SRCS_ECL})
 
 
 target_include_directories(ecl PUBLIC 	${ECL_DIR}
