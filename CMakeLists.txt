@@ -50,7 +50,7 @@ if(NOT EIGEN3_INCLUDE_DIR)
 	message(FATAL_ERROR "Eigen3 not found.")
 endif()
 
-set(MATRIX_DIR ${CMAKE_SOURCE_DIR}/lib/ecl/matrix)
+set(MATRIX_DIR ${CMAKE_CURRENT_SOURCE_DIR}/matrix)
 if(NOT EXISTS "${MATRIX_DIR}/.git")
 	message(SEND_ERROR "The git submodules are not available. Please run git submodule update --init --recursive")
 endif()
